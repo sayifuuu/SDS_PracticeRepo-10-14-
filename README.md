@@ -1,3 +1,5 @@
 # SDS_PracticeRepo-10-14-
 Practice Repo 
-something something something something 
+J'aimerais mourir, mourir paisiblement. 
+Sur mon poignet, mes blessures séchées rappellent par moment que maintenant...
+Hello
