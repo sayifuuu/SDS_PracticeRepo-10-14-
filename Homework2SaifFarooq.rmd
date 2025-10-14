@@ -1,0 +1,81 @@
+---
+title: "Homework 2"
+author: "Hussam Mutashaabah"
+date: "2025-10-14"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: True
+      smooth_scroll: True
+---
+
+Hello
+
+```{r setup, include=FALSE}
+
+# Global Options
+knitr::opts_chunk$set(echo = TRUE)
+
+# Packages
+library(ggplot2)
+
+# Dataset
+TallBuildD <- read.csv("Homework2_TallestBuildings.csv")
+```
+
+## Introduction
+
+The given data set appears to be a comprehensive list of 200 of the world's tallest buildings (≥290m) existing or being completed as of 2025 compiled by the **Council on Tall Buildings and Urban Habitat**. The data set contains relevant details about each edifice such as its location (city), height (m), construction status, material, etc.
+
+> I will be investigating the height distribution of these buildings, the relationship between their completion year and height, as well as the relationship between the number of floors each building has/will have and whether it has been completed.
+
+## Research Question 1
+
+### How tall are the world’s tallest buildings?
+
+```{r h distribution}
+TallBuildD$HeightF <- TallBuildD$Height * 3.28084
+TBD_ggplot <-  ggplot(TallBuildD)
+TBD_ggplot + geom_histogram(aes(x=HeightF), binwidth = 40, col = "lightskyblue3", fill = "lightskyblue2") +
+  geom_vline(xintercept = median(TallBuildD$HeightF), col = "black", linetype = 5) +
+  annotate("text", x = 1340, y = 18, label = "Median", col = "black") +
+  labs(title="Height Distribution of the Tallest Planned and Existing Buildings", x = "Height (ft)", y = "# of Buildings", caption = "Source: CTBUH, 2025")
+```
+
+As depicted above, the graph is positively skewed toward the right. It has a median of **`r round(median(TallBuildD$HeightF),3)`** and an interquartile range of **`r round(IQR(TallBuildD$HeightF),3)`**.
+
+This illustrates that most of the buildings in this data set roughly have a height between **1000** and **1500** feet.
+
+## Research Question 2
+
+### For completed buildings, is there a relationship between the year it was completed and height?
+
+```{r year relation}
+CompBuildD <- TallBuildD[TallBuildD$Status == "Completed",]
+CB_ggplot <- ggplot(CompBuildD)
+CB_ggplot + geom_point(aes(x = CompletionYear, y = HeightF), col = "skyblue4") + 
+  labs(title="Relationship of Existing Building Completion Year to Height", x = "Completion Year", y = "Height (ft)", caption = "Source: CTBUH, 2025") 
+```
+
+According to the data from the scatterplot above of the relationship between a constructed building's completion year and its height, the pearson correlation between the two variables is **`r round(cor(CompBuildD$CompletionYear, CompBuildD$HeightF),3)`**.
+
+Although there is a slight tendency for taller buildings to be constructed in recent years as shown by the scatter plot, this indicates that there is a **weak relationship** between the completion year and height as evidenced by the low pearson correlation, and many buildings, at this time, are still being constructed with a final height **\<1500 feet**.
+
+## Research Question 3
+
+### "How does the number of floors differ between completed buildings and buildings still under construction?"
+
+```{r complete vs construction}
+UncompBuildD <- TallBuildD[TallBuildD$Status == "Under construction",]
+TBD_ggplot + geom_histogram(aes(x=Floors,fill=Status), alpha=.5, binwidth=5, position='identity', na.rm=TRUE) +
+  geom_vline(xintercept = median(CompBuildD$Floors, na.rm = TRUE),col = "#d87c74",linetype = 1,linewidth = 1.5) +
+  geom_vline(xintercept = median(UncompBuildD$Floors, na.rm = TRUE),col = "#50a8ab",linetype = 1,linewidth = 1.5) +
+  labs(title="Comparison of Number of Floors by Building Status", x = "# of Floors", y = "# of Buildings")  
+```
+
+Both graphs of the completed and under construction buildings are skewed to the right with the completed buildings being slightly less skewed than the ones under construction. The former has a median of **`r round(median(CompBuildD$Floors),3)`** and an interquartile range of **`r round(IQR(CompBuildD$Floors),3)`**, while the latter has a median of **`r round(median(UncompBuildD$Floors, na.rm = TRUE),3)`** and an interquartile range of **`r round(IQR(UncompBuildD$Floors, na.rm = TRUE),3)`**. As evidenced by the median, it can be observed that the buildings under construction tend to have slightly less floors compared to that of existing buildings.
+
+## Conclusion
+
+The first analysis of the distribution of the collective building heights resulted in the finding that most of the buildings had a height between **1000** and **1500** feet. The second analysis of the relationship of a finished building's completion year and its height resulted in a **very weak and slightly positive correlation**. Lastly, the graph comparing the number of floors between completed and uncompleted buildings resulted in the finding that uncompleted buildings had **slightly less** planned floors than completed ones.
