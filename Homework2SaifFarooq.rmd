@@ -10,6 +10,8 @@ output:
       smooth_scroll: True
 ---
 
+Hello
+
 ```{r setup, include=FALSE}
 
 # Global Options
